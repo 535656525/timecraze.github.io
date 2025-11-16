@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed | Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#fff;--border:#333;--success:#27ae60}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:var(--primary);color:var(--text)}
+    nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.2rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--white);display:flex;gap:.5rem;align-items:center}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem}
+    .nav-links a{color:var(--text);text-decoration:none;position:relative}
+    .nav-links a::after{content:"";position:absolute;left:0;bottom:-8px;height:2px;width:0;background:var(--accent);transition:width .3s}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%}
+    .container{padding:120px 8% 60px}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.25rem;max-width:1000px;margin:0 auto}
+    .hero{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+    .hero .icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--success);color:#fff;font-size:1.5rem}
+    h1{font-size:1.8rem;color:#fff;font-weight:500}
+    .muted{color:var(--text-light)}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-top:1rem}
+    @media(max-width:992px){.grid{grid-template-columns:1fr}}
+    .section h3{margin-bottom:.6rem;color:#fff;font-weight:600}
+    .row{display:flex;justify-content:space-between;margin:.4rem 0;color:var(--text-light)}
+    .row.total{color:#fff;font-weight:700}
+    .item{display:flex;gap:.8rem;align-items:center;margin:.4rem 0}
+    .item img{width:56px;height:56px;object-fit:contain;background:#191919;border-radius:10px;border:1px solid #222}
+    .btn{display:inline-block;border:none;border-radius:999px;padding:.9rem 1.4rem;font-weight:600;cursor:pointer;transition:all .25s;text-decoration:none}
+    .btn-primary{background:var(--accent);color:var(--primary)}
+    .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px)}
+    .btn-secondary{background:transparent;color:#fff;border:1px solid #fff}
+    .two-btns{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+    .badge{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:#17150c;color:#f0d77a;border:1px solid var(--accent);font-size:.8rem;margin-left:.5rem}
+    .address{line-height:1.7}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><i class="fas fa-crown"></i>Time<span>craze</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="collection.html">Collections</a>
+      <a href="New Arrivals.html">New Arrivals</a>
+      <a href="limited-edition.html">Limited Edition</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html"><i class="fas fa-shopping-bag"></i> Cart</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <div class="hero">
+        <div class="icon"><i class="fas fa-check"></i></div>
+        <div>
+          <h1>Order Confirmed <span id="orderBadge" class="badge"></span></h1>
+          <div class="muted" id="orderDate"></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="section">
+          <h3>Items</h3>
+          <div id="items"></div>
+          <div class="two-btns">
+            <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+            <a href="collection.html" class="btn btn-secondary">Explore Collections</a>
+          </div>
+        </div>
+        <div class="section">
+          <h3>Summary</h3>
+          <div class="row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+          <div class="row"><span>Shipping</span><span>FREE</span></div>
+          <div class="row"><span>Tax (8%)</span><span id="tax">₹0</span></div>
+          <div class="row total"><span>Total</span><span id="total">₹0</span></div>
+          <div class="divider" style="height:1px;background:var(--border);margin:1rem 0"></div>
+          <h3>Shipping To</h3>
+          <div class="address" id="shipTo"></div>
+          <div class="divider" style="height:1px;background:var(--border);margin:1rem 0"></div>
+          <h3>Payment</h3>
+          <div id="paymentMethod" class="muted"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function inr(n){return `₹${(n||0).toLocaleString('en-IN')}`}
+    const data = JSON.parse(localStorage.getItem('lastOrder')||'null');
+    if(!data){
+      // If accessed directly, redirect home
+      window.location.replace('index.html');
+    } else {
+      document.getElementById('orderBadge').textContent = `#${data.id}`;
+      document.getElementById('orderDate').textContent = new Date(data.date).toLocaleString();
+      // Items
+      const itemsDiv = document.getElementById('items');
+      data.items.forEach(it=>{
+        const row = document.createElement('div');
+        row.className='item';
+        row.innerHTML = `<img src="${it.image}" alt="${it.name}"><div><div>${it.name}</div><div class="muted">Qty: ${it.quantity}</div></div><div style="margin-left:auto;">${inr(it.price*it.quantity)}</div>`;
+        itemsDiv.appendChild(row);
+      });
+      // Totals
+      document.getElementById('subtotal').textContent = inr(data.subtotal);
+      document.getElementById('tax').textContent = inr(data.tax);
+      document.getElementById('total').textContent = inr(data.total);
+      // Address
+      const a = data.address;
+      document.getElementById('shipTo').innerHTML = `
+        ${a.firstName} ${a.lastName}<br>
+        ${a.address}<br>
+        ${a.city}, ${a.state} - ${a.zip}<br>
+        ${a.country}<br>
+        <span class="muted">Phone: ${a.phone} · Email: ${a.email}</span>
+      `;
+      // Payment
+      document.getElementById('paymentMethod').textContent = data.paymentMethod;
+      // Clear lastOrder after rendering (optional keep)
+      // localStorage.removeItem('lastOrder');
+    }
+  </script>
+</body>
+</html>

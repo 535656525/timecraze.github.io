@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boutiques - Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#fff;--border:#333}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat','Segoe UI',sans-serif}
+    body{background:var(--primary);color:var(--text)}
+    nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.2rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--white);display:flex;gap:.5rem;align-items:center}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem}
+    .nav-links a{color:var(--text);text-decoration:none;position:relative}
+    .nav-links a::after{content:"";position:absolute;left:0;bottom:-8px;height:2px;width:0;background:var(--accent);transition:width .3s}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%}
+    .hero{min-height:50vh;padding:120px 10% 40px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;text-align:center}
+    .hero h1{font-size:3rem;font-weight:300;color:var(--white);margin-bottom:.6rem}
+    .hero p{color:var(--text-light)}
+    .section{padding:70px 8%}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+    .store{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.2rem}
+    .store h3{color:var(--white);margin-bottom:.3rem;font-size:1.1rem}
+    .muted{color:var(--text-light);font-size:.95rem}
+    .contact{margin-top:.8rem;color:var(--text-light)}
+    footer{background:var(--secondary);border-top:1px solid var(--border);padding:3rem 8%;color:var(--text-light);text-align:center}
+    @media(max-width:768px){.hero h1{font-size:2.2rem}.nav-links{display:none}}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><i class="fas fa-crown"></i>Time<span>craze</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="collection.html">Collections</a>
+      <a href="New Arrivals.html">New Arrivals</a>
+      <a href="limited-edition.html">Limited Edition</a>
+      <a href="boutiques.html" class="active">Boutiques</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html"><i class="fas fa-shopping-bag"></i> Cart</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1>Our Boutiques</h1>
+      <p>Visit us for a personal consultation and hands-on experience.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="grid">
+      <div class="store">
+        <h3>Mumbai, India</h3>
+        <div class="muted">Palladium Mall, Lower Parel</div>
+        <div class="contact"><i class="fas fa-phone"></i> +91 22 1234 5678</div>
+      </div>
+      <div class="store">
+        <h3>Delhi, India</h3>
+        <div class="muted">DLF Emporio, Vasant Kunj</div>
+        <div class="contact"><i class="fas fa-phone"></i> +91 11 2345 6789</div>
+      </div>
+      <div class="store">
+        <h3>Dubai, UAE</h3>
+        <div class="muted">The Dubai Mall, Fashion Avenue</div>
+        <div class="contact"><i class="fas fa-phone"></i> +971 4 111 2222</div>
+      </div>
+      <div class="store">
+        <h3>London, UK</h3>
+        <div class="muted">Bond Street</div>
+        <div class="contact"><i class="fas fa-phone"></i> +44 20 7654 3210</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Timecraze. Find more locations via our store locator.</p>
+  </footer>
+</body>
+</html>

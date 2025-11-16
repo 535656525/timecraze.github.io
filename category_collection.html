@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ collection_title or 'Collection' }} - Timecraze</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+        :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#ffffff;--border:#333333}
+        body{background-color:var(--primary);color:var(--text);line-height:1.6;overflow-x:hidden}
+        nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+        .logo{font-size:1.6rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:.5rem}
+        .logo span{color:var(--accent)}
+        .nav-links{display:flex;gap:2rem;align-items:center}
+        .nav-links a{text-decoration:none;color:var(--text);font-weight:500;font-size:.95rem;position:relative}
+        .nav-links a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:2px;background:var(--accent);transition:width .3s ease}
+        .nav-links a:hover::after{width:100%}
+        .nav-actions{display:flex;align-items:center;gap:1.2rem}
+        .nav-actions a{color:var(--text);text-decoration:none}
+        .page-header{padding:120px 8% 40px;background:var(--primary);text-align:left;border-bottom:1px solid var(--border)}
+        .page-header h1{font-size:2.4rem;font-weight:500;color:var(--white);margin-bottom:.4rem}
+        .page-header p{font-size:.95rem;color:var(--text-light)}
+        .watches-section{padding:30px 6% 60px;background:var(--primary)}
+        .watches-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;max-width:1200px;margin:0 auto}
+        @media(max-width:1200px){.watches-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:768px){.watches-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:480px){.watches-grid{grid-template-columns:1fr}}
+        .watch-card{background:var(--card-bg);border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:all .3s ease;border:1px solid var(--border)}
+        .watch-card:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(0,0,0,.4)}
+        .watch-image{height:200px;background:linear-gradient(135deg,#2a2a2a,#1a1a1a);display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .watch-image img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+        .watch-card:hover .watch-image img{transform:scale(1.05)}
+        .watch-content{padding:.9rem}
+        .watch-content h3{font-size:.98rem;margin-bottom:.3rem;color:var(--white)}
+        .watch-content p{font-size:.8rem;color:var(--text-light);margin-bottom:.5rem}
+        .price{font-size:.96rem;font-weight:700;color:var(--accent);margin-bottom:.4rem}
+        .btn{display:inline-block;padding:.6rem 1.4rem;border-radius:999px;border:none;text-decoration:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s ease}
+        .btn-primary{background:var(--accent);color:var(--primary)}
+        .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 10px 24px rgba(212,175,55,.35)}
+        .empty-state{text-align:center;color:var(--text-light);margin-top:40px;font-size:.95rem}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}" class="logo">Time<span>craze</span></a>
+        <div style="display:flex;align-items:center;gap:2.5rem;">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('products.shop') }}">Collections</a>
+                <a href="{{ url_for('new_arrivals') }}">New Arrivals</a>
+                <a href="{{ url_for('limited_edition') }}">Limited Edition</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('cart.view_cart') }}" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>{{ collection_title or 'Collection' }}</h1>
+        {% if active_category %}
+        <p>Showing watches for <strong>{{ active_category }}</strong> category.</p>
+        {% else %}
+        <p>Curated selection of premium timepieces.</p>
+        {% endif %}
+    </section>
+
+    <section class="watches-section">
+        <div class="watches-grid">
+            {% if products %}
+                {% for p in products %}
+                <div class="watch-card">
+                    <div class="watch-image">
+                        <img src="{{ p.image or 'https://via.placeholder.com/400x400?text=Timecraze' }}" alt="{{ p.name or p.model_name }}" loading="lazy">
+                    </div>
+                    <div class="watch-content">
+                        <h3>{{ p.name or p.model_name }}</h3>
+                        <p>
+                            {{ p.brand or '' }}
+                            {% if p.movement_type %}
+                                · {{ p.movement_type }}
+                            {% endif %}
+                        </p>
+                        <div class="price">
+                            MRP ₹{{ '%.2f'|format(p.price) if p.price is not none else '0.00' }}
+                        </div>
+                        <a href="{{ url_for('products.product', id=p._id) }}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">No watches available in this category yet.</div>
+            {% endif %}
+        </div>
+    </section>
+</body>
+</html>

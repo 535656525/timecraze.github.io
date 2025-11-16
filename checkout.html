@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#fff;--border:#333;--success:#27ae60}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:var(--primary);color:var(--text)}
+    nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.2rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--white);display:flex;gap:.5rem;align-items:center}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem}
+    .nav-links a{color:var(--text);text-decoration:none;position:relative}
+    .nav-links a::after{content:"";position:absolute;left:0;bottom:-8px;height:2px;width:0;background:var(--accent);transition:width .3s}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%}
+    .container{padding:120px 8% 60px}
+    .checkout-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem}
+    @media(max-width:992px){.checkout-grid{grid-template-columns:1fr}}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+    h2{font-weight:500;color:var(--white);margin-bottom:1rem}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    label{display:block;color:var(--text-light);font-size:.9rem;margin-bottom:.35rem}
+    input,select,textarea{width:100%;padding:.9rem;border-radius:12px;border:1px solid var(--border);background:#181818;color:var(--text)}
+    .muted{color:var(--text-light)}
+    .inline{display:flex;gap:1rem;align-items:center}
+    .section-title{margin-top:1rem;margin-bottom:.75rem;color:var(--white)}
+    .pay-option{display:flex;align-items:center;gap:.6rem;margin:.4rem 0;padding:.7rem;border:1px solid var(--border);border-radius:12px;cursor:pointer}
+    .pay-option.selected{border-color:var(--accent);background:#17150c}
+    .summary-list{display:flex;flex-direction:column;gap:.75rem}
+    .sum-row{display:flex;justify-content:space-between;color:var(--text-light)}
+    .sum-row.total{color:var(--white);font-weight:700;margin-top:.5rem}
+    .btn{display:inline-block;border:none;border-radius:999px;padding:.9rem 1.4rem;font-weight:600;cursor:pointer;transition:all .25s}
+    .btn-primary{background:var(--accent);color:var(--primary)}
+    .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px)}
+    .btn-secondary{background:transparent;color:var(--white);border:1px solid var(--white)}
+    .coupon{display:flex;gap:.6rem}
+    .divider{height:1px;background:var(--border);margin:1rem 0}
+    .item{display:flex;gap:.8rem;align-items:center}
+    .item img{width:56px;height:56px;object-fit:contain;background:#191919;border-radius:10px;border:1px solid #222}
+    .item .title{color:var(--white);font-size:.95rem}
+    .toast{position:fixed;top:100px;right:20px;background:var(--success);color:#fff;padding:12px 18px;border-radius:10px;z-index:10000;box-shadow:0 5px 15px rgba(0,0,0,.3);opacity:0;transform:translateX(20px);transition:all .3s}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><i class="fas fa-crown"></i>Time<span>craze</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="collection.html">Collections</a>
+      <a href="New Arrivals.html">New Arrivals</a>
+      <a href="limited-edition.html">Limited Edition</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html"><i class="fas fa-shopping-bag"></i> Cart</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="checkout-grid">
+      <div class="card">
+        <h2>Shipping Details</h2>
+        <div class="form-row">
+          <div><label>First Name</label><input id="firstName" required pattern="[A-Za-z\s]+" title="Only letters and spaces"></div>
+          <div><label>Last Name</label><input id="lastName" required pattern="[A-Za-z\s]+" title="Only letters and spaces"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Phone</label><input id="phone" placeholder="10-digit number" required inputmode="numeric" pattern="\d{10}" maxlength="10" title="Enter 10 digits"></div>
+          <div><label>Email</label><input id="email" type="email" required></div>
+        </div>
+        <div><label>Address</label><input id="address" required></div>
+        <div class="form-row">
+          <div><label>City</label>
+            <select id="city" required>
+              <option value="">Select city</option>
+              <option>Mumbai</option>
+              <option>Delhi</option>
+              <option>Bengaluru</option>
+              <option>Hyderabad</option>
+              <option>Chennai</option>
+              <option>Kolkata</option>
+              <option>Pune</option>
+              <option>Ahmedabad</option>
+              <option>Jaipur</option>
+              <option>Rajkot</option>
+              <option>Surat</option>
+            </select>
+          </div>
+          <div><label>State</label>
+            <select id="state" required>
+              <option value="">Select state</option>
+              <option>Maharashtra</option>
+              <option>Delhi (NCT)</option>
+              <option>Karnataka</option>
+              <option>Telangana</option>
+              <option>Tamil Nadu</option>
+              <option>West Bengal</option>
+              <option>Gujarat</option>
+              <option>Rajasthan</option>
+              <option>Uttar Pradesh</option>
+              <option>Madhya Pradesh</option>
+              <option>Punjab</option>
+              <option>Haryana</option>
+              <option>Kerala</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div><label>Pincode</label><input id="zip" required inputmode="numeric" pattern="\d{6}" maxlength="6" title="Enter 6-digit pincode"></div>
+          <div><label>Country</label>
+            <select id="country"><option>India</option><option>United States</option><option>United Kingdom</option></select>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <h2 class="section-title">Payment</h2>
+        <div class="pay-option selected" data-available="true"><input type="radio" name="pay" id="cod" checked> <label for="cod">Cash on Delivery (COD)</label></div>
+        <div class="pay-option" data-available="false"><input type="radio" name="pay" id="upi"> <label for="upi">UPI (Coming Soon)</label></div>
+        <div class="pay-option" data-available="false"><input type="radio" name="pay" id="card"> <label for="card">Credit/Debit Card (Coming Soon)</label></div>
+      </div>
+
+      <div class="card">
+        <h2>Order Summary</h2>
+        <div id="items"></div>
+        <div class="divider"></div>
+        <div class="coupon">
+          <input id="coupon" placeholder="Promo code (e.g. TIMECRAZE10)">
+          <button class="btn btn-secondary" id="applyCoupon">Apply</button>
+        </div>
+        <div class="divider"></div>
+        <div class="summary-list">
+          <div class="sum-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+          <div class="sum-row"><span>Shipping</span><span id="shipping">FREE</span></div>
+          <div class="sum-row"><span>Tax (8%)</span><span id="tax">₹0</span></div>
+          <div class="sum-row total"><span>Total</span><span id="total">₹0</span></div>
+        </div>
+        <div style="margin-top:1rem" class="inline">
+          <input type="checkbox" id="agree"> <label for="agree">I agree to the Terms and Privacy Policy</label>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.8rem;flex-wrap:wrap;">
+          <a href="cart.html" class="btn btn-secondary">Back to Cart</a>
+          <button class="btn btn-primary" id="placeOrder">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function inr(n){return `₹${(n||0).toLocaleString('en-IN')}`}
+    function readCart(){
+      const items = (JSON.parse(localStorage.getItem('cartItems')||'[]')||[]).map(it=>({
+        ...it,
+        quantity: Math.max(1, Number(it.quantity)||1),
+        price: Number(it.price)||0
+      }));
+      return items;
+    }
+    function renderSummary(){
+      const container = document.getElementById('items');
+      const cart = readCart();
+      container.innerHTML = '';
+      if(cart.length===0){
+        container.innerHTML = '<p class="muted">Your cart is empty.</p>';
+      } else {
+        cart.forEach(it=>{
+          const row = document.createElement('div');
+          row.className='item';
+          row.innerHTML = `<img src="${it.image}" alt="${it.name}"><div><div class="title">${it.name}</div><div class="muted">Qty: ${it.quantity}</div></div><div style="margin-left:auto;">${inr(it.price*it.quantity)}</div>`;
+          container.appendChild(row);
+        });
+      }
+      const subtotal = cart.reduce((s,i)=>s+i.price*i.quantity,0);
+      const tax = Math.round(subtotal*0.08);
+      const shipping = 0;
+      let total = subtotal + tax + shipping;
+      document.getElementById('subtotal').textContent = inr(subtotal);
+      document.getElementById('tax').textContent = inr(tax);
+      document.getElementById('total').textContent = inr(total);
+      return {subtotal,tax,shipping,total};
+    }
+    function toast(msg){
+      const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(0)'});setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(()=>t.remove(),300)},1500);
+    }
+    // live input sanitizers
+    (function(){
+      const phone = document.getElementById('phone');
+      phone.addEventListener('input', ()=>{
+        let v = (phone.value||'').replace(/\D/g,'').slice(0,10);
+        phone.value = v;
+      });
+      ['firstName','lastName'].forEach(id=>{
+        const el = document.getElementById(id);
+        el.addEventListener('input', ()=>{
+          el.value = (el.value||'').replace(/[^A-Za-z\s]+/g,'');
+        });
+      });
+      const zip = document.getElementById('zip');
+      zip.addEventListener('input', ()=>{
+        let v = (zip.value||'').replace(/\D/g,'').slice(0,6);
+        zip.value = v;
+      });
+      // City -> State mapping and auto-select
+      const cityToState = {
+        'Mumbai':'Maharashtra',
+        'Delhi':'Delhi (NCT)',
+        'Bengaluru':'Karnataka',
+        'Hyderabad':'Telangana',
+        'Chennai':'Tamil Nadu',
+        'Kolkata':'West Bengal',
+        'Pune':'Maharashtra',
+        'Ahmedabad':'Gujarat',
+        'Jaipur':'Rajasthan',
+        'Surat':'Gujarat',
+        'Rajkot':'Gujarat'
+      };
+      const citySel = document.getElementById('city');
+      const stateSel = document.getElementById('state');
+      citySel.addEventListener('change', ()=>{
+        const s = cityToState[citySel.value];
+        if(s){ stateSel.value = s; }
+      });
+      // Payment option row click handling
+      const rows = Array.from(document.querySelectorAll('.pay-option'));
+      const setSelected = (row)=>{
+        rows.forEach(r=>r.classList.remove('selected'));
+        row.classList.add('selected');
+        const input = row.querySelector('input[type="radio"]');
+        if(input) input.checked = true;
+      };
+      rows.forEach(row=>{
+        row.addEventListener('click', ()=>{
+          const available = row.getAttribute('data-available') === 'true';
+          if(!available){
+            toast('This payment method is coming soon');
+            const codRow = rows.find(r=>r.querySelector('#cod'));
+            if(codRow){ setSelected(codRow); }
+            return;
+          }
+          setSelected(row);
+        });
+      });
+    })();
+
+    document.getElementById('applyCoupon').addEventListener('click',()=>{
+      const code = (document.getElementById('coupon').value||'').trim().toUpperCase();
+      if(code==='TIMECRAZE10'){
+        const sums = renderSummary();
+        const discount = Math.round(sums.subtotal*0.10);
+        const newTotal = sums.subtotal - discount + sums.tax + sums.shipping;
+        document.getElementById('total').textContent = inr(newTotal);
+        toast('Promo applied: 10% off');
+      } else {
+        toast('Invalid promo code');
+      }
+    });
+    document.getElementById('placeOrder').addEventListener('click',()=>{
+      // basic validation
+      const requiredIds=['firstName','lastName','phone','email','address','city','state','zip'];
+      for(const id of requiredIds){
+        const el=document.getElementById(id); if(!el.value){ el.focus(); toast('Please fill all required fields'); return; }
+      }
+      // custom rules
+      const nameRe = /^[A-Za-z\s]+$/;
+      const f = document.getElementById('firstName').value.trim();
+      const l = document.getElementById('lastName').value.trim();
+      if(!nameRe.test(f) || !nameRe.test(l)) { toast('Names must contain letters only'); return; }
+      const p = document.getElementById('phone').value.trim();
+      if(!/^\d{10}$/.test(p)) { toast('Phone must be exactly 10 digits'); return; }
+      const z = document.getElementById('zip').value.trim();
+      if(!/^\d{6}$/.test(z)) { toast('Pincode must be 6 digits'); return; }
+      if(!document.getElementById('agree').checked){ toast('Please agree to the terms'); return; }
+      const cart = readCart();
+      if(cart.length===0){ toast('Your cart is empty'); return; }
+      const sums = renderSummary();
+      const cartItems = readCart();
+      const paymentMethod = document.querySelector('.pay-option.selected label')?.textContent || 'COD';
+      const order = {
+        id: Math.random().toString(36).slice(2,10).toUpperCase(),
+        date: Date.now(),
+        items: cartItems,
+        subtotal: sums.subtotal,
+        tax: Math.round(sums.subtotal*0.08),
+        shipping: 0,
+        total: document.getElementById('total').textContent.replace(/[^\d]/g,'')*1 || (sums.subtotal + Math.round(sums.subtotal*0.08)),
+        paymentMethod,
+        address: {
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          city: document.getElementById('city').value,
+          state: document.getElementById('state').value,
+          zip: document.getElementById('zip').value.trim(),
+          country: document.getElementById('country').value
+        }
+      };
+      localStorage.setItem('lastOrder', JSON.stringify(order));
+      // Append to orders history
+      const existing = JSON.parse(localStorage.getItem('orders')||'[]');
+      existing.unshift(order);
+      localStorage.setItem('orders', JSON.stringify(existing));
+      // Set track id for quick access
+      localStorage.setItem('trackOrderId', order.id);
+      // Clear cart and go to orders page (server-side route)
+      localStorage.setItem('cartItems','[]');
+      toast('Order placed successfully');
+      setTimeout(()=>{ window.location.href = "{{ url_for('orders.view_orders') }}"; }, 800);
+    });
+    // init
+    renderSummary();
+  </script>
+</body>
+</html>

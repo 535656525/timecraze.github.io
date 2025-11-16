@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Order | Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#fff;--border:#333;--success:#27ae60;--info:#3498db}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:var(--primary);color:var(--text)}
+    nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.2rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--white);display:flex;gap:.5rem;align-items:center}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem}
+    .nav-links a{color:var(--text);text-decoration:none;position:relative}
+    .nav-links a::after{content:"";position:absolute;left:0;bottom:-8px;height:2px;width:0;background:var(--accent);transition:width .3s}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%}
+    .container{padding:120px 8% 60px}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.25rem;max-width:900px;margin:0 auto}
+    h1{color:#fff;font-weight:500;margin-bottom:1rem}
+    .row{display:flex;gap:.6rem;align-items:center;margin-bottom:1rem}
+    input{flex:1;padding:.9rem;border-radius:12px;border:1px solid var(--border);background:#181818;color:var(--text)}
+    .btn{display:inline-block;border:none;border-radius:999px;padding:.9rem 1.4rem;font-weight:600;cursor:pointer;transition:all .25s;text-decoration:none}
+    .btn-primary{background:var(--accent);color:var(--primary)}
+    .btn-secondary{background:transparent;color:#fff;border:1px solid #fff}
+    .status{display:grid;gap:.8rem;margin-top:1rem}
+    .step{display:flex;gap:.8rem;align-items:flex-start;padding:.8rem;border:1px solid var(--border);border-radius:12px}
+    .dot{min-width:14px;height:14px;border-radius:50%;margin-top:.25rem;background:#555}
+    .step.active .dot{background:var(--success)}
+    .muted{color:var(--text-light)}
+    .summary{display:flex;justify-content:space-between;margin-top:1rem;color:var(--text-light)}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('home') }}" class="logo"><i class="fas fa-crown"></i>Time<span>craze</span></a>
+    <div class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('orders.view_orders') }}">My Orders</a>
+      <a href="{{ url_for('cart.view_cart') }}"><i class="fas fa-shopping-bag"></i> Cart</a>
+      <a href="{{ url_for('about') }}">About</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h1>Track Your Order</h1>
+      <div class="row">
+        <input id="trackId" placeholder="Enter Order ID (e.g. #AB12CD34)" value="{% if order %}#{{ order._id|string|truncate(8, True, '') }}{% endif %}">
+        <button class="btn btn-primary" id="trackBtn">Track</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function inr(n){return `₹${(n||0).toLocaleString('en-IN')}`}
+    function renderOrder(o){
+      const container = document.getElementById('result');
+      const steps = [
+        {key:'placed',label:'Order Placed'},
+        {key:'processing',label:'Processing'},
+        {key:'shipped',label:'Shipped'},
+        {key:'delivered',label:'Delivered'}
+      ];
+
+      // decide current step based on explicit status when available
+      let idx = 0;
+      if (o.status) {
+        const s = String(o.status).toLowerCase();
+        if (s === 'processing' || s === 'packed') idx = 1;
+        else if (s === 'shipped') idx = 2;
+        else if (s === 'delivered' || s === 'completed') idx = 3;
+      }
+
+      const items = (o.items || []).map(i=>`${i.name||'Item'} ×${i.quantity||1}`).join(', ');
+      container.innerHTML = `
+        <div class="muted">Order <strong>#${o.id}</strong> • ${new Date(o.date).toLocaleString()}</div>
+        <div class="muted">Items: ${items}</div>
+        <div class="summary"><span>Total</span><span>${inr(o.total)}</span></div>
+        <div class="status" id="status"></div>
+      `;
+      const statusDiv = document.getElementById('status');
+      steps.forEach((s, i)=>{
+        const step = document.createElement('div');
+        step.className = 'step'+(i<=idx?' active':'');
+        step.innerHTML = `<div class="dot"></div><div><div>${s.label}</div><div class="muted">${i<=idx? 'Completed' : 'Pending'}</div></div>`;
+        statusDiv.appendChild(step);
+      });
+    }
+    function findOrderById(id){
+      const orders = JSON.parse(localStorage.getItem('orders')||'[]');
+      return orders.find(o=>String(o.id||'').toUpperCase()===id.toUpperCase());
+    }
+
+    document.getElementById('trackBtn').addEventListener('click', ()=>{
+      const input = document.getElementById('trackId');
+      let id = input.value.trim();
+      if(id.startsWith('#')) id = id.slice(1);
+      const o = findOrderById(id);
+      if(!o){
+        document.getElementById('result').innerHTML = '<div class="muted">Order not found in local history. You can still use the My Orders page Track button for recent orders.</div>';
+        return;
+      }
+      renderOrder(o);
+    });
+
+    // If backend provided a live order, render it directly so status changes from admin are visible
+    (function(){
+      {% if order %}
+      const liveOrder = {
+        id: '{{ order._id }}',
+        date: {{ (order.created_at.timestamp() * 1000)|int if order.created_at is defined else 'Date.now()' }},
+        total: {{ order.total or 0 }},
+        status: '{{ order.status or 'Processing' }}',
+        items: [
+          {% for it in order['items'] %}
+          {name: '{{ it.name|default('Item') }}', quantity: {{ it.quantity|default(1) }} }{{ ',' if not loop.last }}
+          {% endfor %}
+        ]
+      };
+      renderOrder(liveOrder);
+      return;
+      {% endif %}
+
+      // Fallback: use last tracked ID saved in localStorage
+      const def = localStorage.getItem('trackOrderId');
+      if(def){
+        document.getElementById('trackId').value = '#'+def;
+        const o = findOrderById(def) || { id:def, date:Date.now(), total:0, items:[] };
+        renderOrder(o);
+      }
+    })();
+  </script>
+</body>
+</html>

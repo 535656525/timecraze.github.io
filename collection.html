@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections - Timecraze | Premium Watches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .avatar-btn{display:flex;align-items:center;gap:.5rem;cursor:pointer;color:var(--text);text-decoration:none;font-size:.95rem;position:relative}
+        .avatar-circle{width:32px;height:32px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:#333;font-size:.8rem}
+        .avatar-circle img{width:100%;height:100%;object-fit:cover}
+        .dropdown{position:absolute;right:0;top:110%;background:#181818;border:1px solid var(--border);border-radius:10px;min-width:200px;padding:.4rem 0;display:none;z-index:1200}
+        .dropdown a{display:block;padding:.55rem 1rem;color:var(--text);text-decoration:none;font-size:.9rem}
+        .dropdown a:hover{background:#222}
+
+        :root {
+            --primary: #121212;
+            --secondary: #1a1a1a;
+            --accent: #d4af37;
+            --accent-dark: #b8941f;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --card-bg: #1e1e1e;
+            --white: #ffffff;
+            --border: #333333;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .nav-scrolled {
+            padding: 0.8rem 5%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .nav-actions i {
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .nav-actions i:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            min-height: 60vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 120px 10% 80px;
+            text-align: center;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23d4af37" fill-opacity="0.03" points="0,1000 1000,0 1000,1000"/></svg>');
+            animation: slide 20s linear infinite;
+        }
+
+        .page-header h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(224, 224, 224, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Collection Categories */
+        .categories {
+            padding: 80px 5%;
+            background: var(--secondary);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .category-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .category-image {
+            height: 250px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .category-card:hover .category-image img {
+            transform: scale(1.1);
+        }
+
+        .category-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .category-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .category-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Featured Watches */
+        .featured-watches {
+            padding: 100px 6%;
+            background: var(--primary);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .watches-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        @media (max-width: 1200px) {
+            .watches-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .watches-grid { grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+        }
+        @media (max-width: 480px) {
+            .watches-grid { grid-template-columns: 1fr; }
+        }
+
+        .watch-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .watch-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .watch-image {
+            height: 260px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watch-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            padding: 0;
+        }
+
+        .watch-card:hover .watch-image img {
+            transform: scale(1.05);
+        }
+
+        .watch-content {
+            padding: 1.5rem;
+        }
+
+        .watch-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .watch-content p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Limited Edition Section */
+        .limited-edition {
+            padding: 100px 5%;
+            background: var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .limited-edition::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%23d4af37" fill-opacity="0.05"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .limited-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .limited-text h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .limited-text p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .limited-image {
+            position: relative;
+        }
+
+        .limited-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Technology Section */
+        .technology {
+            padding: 100px 5%;
+            background: var(--primary);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .tech-card {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .tech-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+
+        .tech-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .tech-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 10%;
+            background: var(--secondary);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--white);
+            padding: 5rem 10% 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(100px) translateY(100px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+            .nav-links { display: none; }
+            .limited-content { grid-template-columns: 1fr; }
+            .btn { width: 200px; text-align: center; }
+            .watches-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
+            Time<span>craze</span>
+        </a>
+        <div style="display:flex;align-items:center;gap:2.5rem;">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('products.shop') }}" class="active">Collections</a>
+                <a href="{{ url_for('new_arrivals') }}">New Arrivals</a>
+                <a href="{{ url_for('limited_edition') }}">Limited Edition</a>
+                <a href="{{ url_for('about') }}">About</a>
+            </div>
+            <div class="nav-actions">
+                <i class="fas fa-search"></i>
+                <a href="{{ url_for('cart.view_cart') }}" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+                {% if session.get('user_id') %}
+                    <div style="position:relative;">
+                        <div class="avatar-btn" id="colAccountToggle">
+                            <div class="avatar-circle">
+                                {% if session.get('avatar_url') %}
+                                    <img src="{{ session.get('avatar_url') }}" alt="Me">
+                                {% else %}
+                                    <i class="fas fa-user"></i>
+                                {% endif %}
+                            </div>
+                            <span>Account</span>
+                        </div>
+                        <div class="dropdown" id="colAccountMenu">
+                            <a href="{{ url_for('orders.view_orders') }}">My Orders</a>
+                            <a href="{{ url_for('track') }}">Track Order</a>
+                            <a href="{{ url_for('about') }}">About</a>
+                            <a href="{{ url_for('legacy_contact') }}">Contact</a>
+                            <a href="{{ url_for('profile.profile') }}">Profile</a>
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                            <a href="/admin" id="adminLink" style="display:none">Admin</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="avatar-btn"><div class="avatar-circle"><i class="fas fa-user"></i></div><span>Login</span></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-content">
+            <h1>{{ collection_title or 'Our Collections' }}</h1>
+            <p>Discover the perfect timepiece that reflects your style and personality from our curated collections</p>
+        </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <section class="categories" style="padding-top:40px;">
+        <div class="section-header" style="margin-bottom:2rem;">
+            <h2 class="section-title">Explore by Category</h2>
+            <p class="section-subtitle">Find your perfect watch from our specialized collections</p>
+        </div>
+        <div style="display:flex;justify-content:center;gap:1rem;margin-bottom:3rem;flex-wrap:wrap;">
+            {% set cat = (active_category or '')|lower %}
+            <a href="{{ url_for('products.shop') }}" class="btn {% if not cat %}btn-primary{% else %}btn-secondary{% endif %}" style="padding:0.6rem 1.4rem;font-size:0.9rem;">All</a>
+            <a href="{{ url_for('products.men_page') }}" class="btn {% if cat == 'men' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding:0.6rem 1.4rem;font-size:0.9rem;">Men</a>
+            <a href="{{ url_for('products.women_page') }}" class="btn {% if cat == 'women' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding:0.6rem 1.4rem;font-size:0.9rem;">Women</a>
+            <a href="{{ url_for('products.offer_page') }}" class="btn {% if cat == 'offer' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding:0.6rem 1.4rem;font-size:0.9rem;">Offer</a>
+            <a href="{{ url_for('products.bestsellers_page') }}" class="btn {% if cat == 'bestsellers' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding:0.6rem 1.4rem;font-size:0.9rem;">Bestsellers</a>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://www.rado.com/media/catalog/product/c/a/captaincook_r32222108_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center" alt="Diver Watches">
+                </div>
+                <div class="category-content">
+                    <h3>Diver Collection</h3>
+                    <p>Professional diving watches with water resistance up to 300m, featuring unidirectional bezels and luminescent markers.</p>
+                    <a href="#" class="btn btn-primary">Explore Diver</a>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://www.rado.com/media/catalog/product/f/l/florence_r48903723_sld_web.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center" alt="Classic Watches">
+                </div>
+                <div class="category-content">
+                    <h3>Classic Series</h3>
+                    <p>Timeless elegance with sophisticated designs, perfect for formal occasions and everyday luxury.</p>
+                    <a href="#" class="btn btn-primary">Explore Classic</a>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://www.rado.com/media/catalog/product/h/y/hyperchrome_r32259323_sld_web_2.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center" alt="Chronograph Watches">
+                </div>
+                <div class="category-content">
+                    <h3>Chronograph</h3>
+                    <p>Precision timing instruments with multiple sub-dials and stopwatch functionality for the modern professional.</p>
+                    <a href="#" class="btn btn-primary">Explore Chronograph</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Watches (from database) -->
+    <section class="featured-watches">
+        <div class="section-header">
+            <h2 class="section-title">Featured Timepieces</h2>
+            <p class="section-subtitle">Handpicked selections from our premium collections</p>
+        </div>
+        <div class="watches-grid" id="featuredWatches">
+            {% if products %}
+                {% for p in products %}
+                <div class="watch-card visible">
+                    <div class="watch-image">
+                        <img src="{{ p.image or 'https://via.placeholder.com/400x400?text=Timecraze' }}" alt="{{ p.name or p.model_name }}" loading="lazy">
+                    </div>
+                    <div class="watch-content">
+                        <h3>{{ p.name or p.model_name }}</h3>
+                        <p>
+                            {{ p.brand or '' }}
+                            {% if p.movement_type %}
+                                 b7 {{ p.movement_type }}
+                            {% endif %}
+                            {% if p.category %}
+                                 b7 {{ p.category }}
+                            {% endif %}
+                        </p>
+                        <div class="price">
+                            <div>MRP ₹{{ '%.2f'|format(p.price) if p.price is not none else '0.00' }}</div>
+                            <div style="font-size:0.8rem;color:#a0a0a0;margin-top:0.2rem;">Inclusive of all taxes*</div>
+                        </div>
+                        <a href="{{ url_for('products.product', id=p._id) }}" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="section-subtitle">No products available yet. Add some watches from the admin panel.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Limited Edition Section -->
+    <section class="limited-edition">
+        <div class="limited-content">
+            <div class="limited-text">
+                <h2>Limited Edition Masterpiece</h2>
+                <p>Discover our exclusive limited edition timepiece, crafted in collaboration with renowned artisans. Only 50 pieces worldwide.</p>
+                <p>Featuring a unique skeleton dial, rose gold plating, and a custom-made automatic movement with 80-hour power reserve.</p>
+                <div class="cta-buttons" style="justify-content: start; margin-top: 2rem;">
+                    <a href="#" class="btn btn-primary">Reserve Now</a>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="limited-image">
+                <img src="https://www.rado.com/media/catalog/product/c/a/captaincook_r32148162_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center" alt="Limited Edition Watch">
+            </div>
+        </div>
+    </section>
+
+   
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Begin Your Horological Journey</h2>
+            <p>Visit our boutiques for a personalized consultation or explore our digital catalog to find your perfect timepiece.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Book Appointment</a>
+                <a href="#" class="btn btn-secondary">Download Catalog</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Timecraze</h3>
+                <a href="#">Our Heritage</a>
+                <a href="#">Craftsmanship</a>
+                <a href="#">Sustainability</a>
+                <a href="#">Careers</a>
+            </div>
+            <div class="footer-column">
+                <h3>Collections</h3>
+                <a href="#">Diver Series</a>
+                <a href="#">Classic Collection</a>
+                <a href="#">Chronograph</a>
+                <a href="#">Limited Editions</a>
+            </div>
+            <div class="footer-column">
+                <h3>Services</h3>
+                <a href="#">After-Sales Service</a>
+                <a href="#">Warranty Information</a>
+                <a href="#">Watch Care</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <a href="#">Store Locator</a>
+                <a href="#">Customer Service</a>
+                <a href="#">Corporate Gifting</a>
+                <a href="#">+1 (888) 827-3932</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Timecraze. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+      // Show Admin link for admin session user
+      fetch('/api/me').then(r=>r.json()).then(d=>{
+        if(d && d.user && d.user.isAdmin){
+          var a=document.getElementById('adminLink'); if(a) a.style.display='inline-block';
+        }
+      }).catch(()=>{});
+    </script>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+              var a=document.getElementById('adminLink'); if(a) a.style.display='inline-block';
+            }
+          }).catch(()=>{});
+        </script>
+
+        <script>
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('nav-scrolled');
+                } else {
+                    nav.classList.remove('nav-scrolled');
+                }
+            });
+
+            // Scroll animations
+            function animateOnScroll() {
+                const elements = document.querySelectorAll('.category-card, .watch-card, .tech-card');
+                
+                elements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            }
+
+            window.addEventListener('load', function() {
+                animateOnScroll();
+            });
+
+            window.addEventListener('scroll', animateOnScroll);
+        </script>
+    </body>
+    </html>

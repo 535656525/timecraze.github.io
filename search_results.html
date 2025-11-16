@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body{margin:0;background:#121212;color:#e0e0e0;font-family:'Montserrat','Segoe UI',sans-serif;overflow-x:hidden}
+    .page{max-width:1200px;margin:90px auto 40px;padding:0 5%}
+    .heading{margin-bottom:1rem}
+    .heading h1{font-weight:300;font-size:2.2rem;margin:0 0 .3rem}
+    .heading p{color:#a0a0a0;margin:0;font-size:.95rem}
+    .search-form{margin:1.5rem 0 2rem;display:flex;gap:.75rem}
+    .search-input{flex:1;padding:.8rem 1rem;border-radius:999px;border:1px solid #333;background:#1a1a1a;color:#e0e0e0}
+    .search-btn{padding:.8rem 1.6rem;border-radius:999px;border:none;background:#d4af37;color:#121212;font-weight:600;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+    .card{background:#1e1e1e;border:1px solid #333;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+    .card-img{height:180px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a2a2a,#1a1a1a)}
+    .card-img img{max-width:100%;max-height:100%;object-fit:contain;padding:.7rem}
+    .card-body{padding:1rem}
+    .card-body h3{margin:0 0 .4rem;font-size:1rem;color:#fff}
+    .meta{font-size:.8rem;color:#a0a0a0;margin-bottom:.5rem}
+    .price{color:#d4af37;font-weight:700;margin-bottom:.8rem;font-size:.95rem}
+    .view-link{display:inline-block;padding:.5rem 1.2rem;border-radius:999px;border:1px solid #fff;color:#fff;text-decoration:none;font-size:.85rem}
+    .view-link:hover{background:#fff;color:#121212}
+    .empty{margin-top:2rem;color:#a0a0a0}
+  </style>
+</head>
+<body>
+  {% include 'base_nav_stub.html' ignore missing %}
+  <div class="page">
+    <div class="heading">
+      <h1>Search results</h1>
+      {% if q %}
+        <p>Showing products matching "{{ q }}"</p>
+      {% else %}
+        <p>Type a keyword to search products.</p>
+      {% endif %}
+    </div>
+    <form class="search-form" method="get" action="{{ url_for('products.search') }}">
+      <input class="search-input" type="text" name="q" value="{{ q }}" placeholder="Search watches by name, brand, or collection...">
+      <button class="search-btn" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+    {% if products %}
+      <div class="grid">
+        {% for p in products %}
+        <div class="card">
+          <div class="card-img">
+            <img src="{{ p.image or 'https://via.placeholder.com/400x400?text=Timecraze' }}" alt="{{ p.name or p.model_name }}">
+          </div>
+          <div class="card-body">
+            <h3>{{ p.name or p.model_name }}</h3>
+            <div class="meta">
+              {{ p.brand or '' }}{% if p.category %} · {{ p.category }}{% endif %}
+            </div>
+            <div class="price">₹ {{ '%.2f'|format(p.price) if p.price is not none else '0.00' }}</div>
+            <a class="view-link" href="{{ url_for('products.product', id=p._id) }}">View Details</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        {% if q %}
+          No products found for "{{ q }}".
+        {% else %}
+          Start by entering a search term above.
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

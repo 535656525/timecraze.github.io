@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}New Arrivals | Timecraze{% endblock %}
+
+{% block head %}
+  <style>
+    .nav-links a[href="{{ url_for('new_arrivals') }}"]{display:none;}
+    .arrivals-page{padding:2rem 5%;min-height:60vh}
+    .arrivals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem}
+    .watch-card{background:#1e1e1e;border-radius:15px;border:1px solid #333;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.3);display:flex;flex-direction:column}
+    .watch-image{height:200px;background:linear-gradient(135deg,#2a2a2a,#1a1a1a);display:flex;align-items:center;justify-content:center}
+    .watch-image img{max-width:100%;max-height:100%;object-fit:contain;padding:.8rem}
+    .watch-content{padding:1rem}
+    .watch-content h3{margin:0 0 .4rem 0;font-size:1rem;color:#fff}
+    .watch-content p{margin:0 0 .6rem 0;font-size:.85rem;color:#a0a0a0}
+    .price{color:#d4af37;font-weight:700;margin-bottom:.6rem}
+    .btn-view{display:inline-block;padding:.5rem 1.2rem;border-radius:999px;border:1px solid #fff;color:#fff;text-decoration:none;font-size:.85rem}
+    .btn-view:hover{background:#fff;color:#121212}
+  </style>
+{% endblock %}
+
+{% block content %}
+  <section class="arrivals-page">
+    <h1 style="margin:0 0 1rem 0">New Arrivals</h1>
+    <p class="muted">Discover the latest additions to our collection.</p>
+
+    {% if products %}
+      <div class="arrivals-grid">
+        {% for p in products %}
+        <div class="watch-card">
+          <div class="watch-image">
+            <img src="{{ p.image or 'https://via.placeholder.com/400x400?text=Timecraze' }}" alt="{{ p.name or p.model_name }}">
+          </div>
+          <div class="watch-content">
+            <h3>{{ p.name or p.model_name }}</h3>
+            <p>
+              {{ p.brand or '' }}
+              {% if p.category %} · {{ p.category }}{% endif %}
+            </p>
+            <div class="price">₹{{ '%.2f'|format(p.price) if p.price is not none else '0.00' }}</div>
+            <a class="btn-view" href="{{ url_for('products.product', id=p._id) }}">View Details</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted" style="margin-top:1.5rem">No new arrivals configured yet. Use the admin panel to mark watches as "New Arrivals".</p>
+    {% endif %}
+  </section>
+{% endblock %}
+
+{% block scripts %}{% endblock %}

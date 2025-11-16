@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Arrivals - Timecraze | Premium Watches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .avatar-btn{display:flex;align-items:center;gap:.5rem;cursor:pointer;color:var(--text);text-decoration:none;font-size:.95rem;position:relative}
+        .avatar-circle{width:32px;height:32px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:#333;font-size:.8rem}
+        .avatar-circle img{width:100%;height:100%;object-fit:cover}
+        .dropdown{position:absolute;right:0;top:110%;background:#181818;border:1px solid var(--border);border-radius:10px;min-width:200px;padding:.4rem 0;display:none;z-index:1200}
+        .dropdown a{display:block;padding:.55rem 1rem;color:var(--text);text-decoration:none;font-size:.9rem}
+        .dropdown a:hover{background:#222}
+
+        :root {
+            --primary: #121212;
+            --secondary: #1a1a1a;
+            --accent: #d4af37;
+            --accent-dark: #b8941f;
+            --text: #e0e0e0;
+            --text-light: #a0a0a0;
+            --card-bg: #1e1e1e;
+            --white: #ffffff;
+            --border: #333333;
+            --new: #e74c3c;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .nav-scrolled {
+            padding: 0.8rem 5%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .nav-actions i {
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .nav-actions i:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            min-height: 50vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 120px 10% 60px;
+            text-align: center;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23d4af37" fill-opacity="0.03" points="0,1000 1000,0 1000,1000"/></svg>');
+            animation: slide 20s linear infinite;
+        }
+
+        .page-header h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(224, 224, 224, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* New Badge */
+        .new-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--new);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+            animation: pulse 2s infinite;
+        }
+
+        /* Filter Section */
+        .filters {
+            padding: 3rem 5%;
+            background: var(--secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .sort-select {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* New Arrivals Grid */
+        .new-arrivals {
+            padding: 80px 6%;
+            background: var(--primary);
+        }
+
+        .arrivals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .arrivals-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .arrivals-grid { grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .arrivals-grid { grid-template-columns: 1fr; }
+        }
+
+        .arrival-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .arrival-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .arrival-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .arrival-image {
+            height: 210px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arrival-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            padding: 0;
+        }
+
+        .arrival-card:hover .arrival-image img {
+            transform: scale(1.08);
+        }
+
+        .arrival-content {
+            padding: 0.9rem;
+            position: relative;
+        }
+
+        .arrival-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+            color: var(--white);
+        }
+
+        .arrival-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .arrival-type {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .arrival-collection {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .arrival-description {
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .availability {
+            color: #2ecc71;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            margin-left: 1rem;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Featured Innovation */
+        .featured-innovation {
+            padding: 100px 5%;
+            background: var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .innovation-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .innovation-text h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .innovation-features {
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .feature-item i {
+            color: var(--accent);
+        }
+
+        .innovation-image {
+            position: relative;
+            text-align: center;
+        }
+
+        .innovation-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            padding: 100px 5%;
+            background: var(--primary);
+            text-align: center;
+        }
+
+        .coming-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .coming-card {
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.4s ease;
+        }
+
+        .coming-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .coming-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .coming-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .coming-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .release-date {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 80px 5%;
+            background: var(--secondary);
+            text-align: center;
+        }
+
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .newsletter p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--white);
+            padding: 5rem 10% 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(100px) translateY(100px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .innovation-content { grid-template-columns: 1fr; }
+            .filter-container { justify-content: center; }
+            .newsletter-form { flex-direction: column; }
+            .btn-secondary { margin-left: 0; margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
+            Time<span>craze</span>
+        </a>
+        <div style="display:flex;align-items:center;gap:2.5rem;">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('products.shop') }}">Collections</a>
+                <a href="{{ url_for('new_arrivals') }}" class="active">New Arrivals</a>
+                <a href="{{ url_for('limited_edition') }}">Limited Edition</a>
+                <a href="{{ url_for('about') }}">About</a>
+            </div>
+            <div class="nav-actions">
+                <i class="fas fa-search"></i>
+                <a href="{{ url_for('cart.view_cart') }}" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+                {% if session.get('user_id') %}
+                    <div style="position:relative;">
+                        <div class="avatar-btn" id="arrAccountToggle">
+                            <div class="avatar-circle">
+                                {% if session.get('avatar_url') %}
+                                    <img src="{{ session.get('avatar_url') }}" alt="Me">
+                                {% else %}
+                                    <i class="fas fa-user"></i>
+                                {% endif %}
+                            </div>
+                            <span>Account</span>
+                        </div>
+                        <div class="dropdown" id="arrAccountMenu">
+                            <a href="{{ url_for('orders.view_orders') }}">My Orders</a>
+                            <a href="{{ url_for('track') }}">Track Order</a>
+                            <a href="{{ url_for('about') }}">About</a>
+                            <a href="{{ url_for('legacy_contact') }}">Contact</a>
+                            <a href="{{ url_for('profile.profile') }}">Profile</a>
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                            <a href="/admin" id="adminLink" style="display:none">Admin</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="avatar-btn"><div class="avatar-circle"><i class="fas fa-user"></i></div><span>Login</span></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-content">
+            <h1>New Arrivals</h1>
+            <p>Discover the latest additions to our premium watch collection. Fresh designs, innovative technology, and timeless craftsmanship.</p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filters">
+        <div class="filter-container">
+            <div class="filter-group">
+                <button class="filter-btn active">All Watches</button>
+                <button class="filter-btn">Automatic</button>
+                <button class="filter-btn">Chronograph</button>
+                <button class="filter-btn">Diver</button>
+                <button class="filter-btn">Limited Edition</button>
+            </div>
+            <div class="filter-group">
+                <select class="sort-select">
+                    <option>Sort by: Newest First</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Most Popular</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Arrivals Grid -->
+    <section class="new-arrivals">
+        <div class="arrivals-grid" id="arrivalsGrid">
+            <!-- New arrival cards will be generated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Featured Innovation -->
+    <section class="featured-innovation">
+        <div class="innovation-content">
+            <div class="innovation-text">
+                <h2>Revolutionary Ceramic Technology</h2>
+                <p>Introducing our latest innovation in watchmaking - the next generation of high-tech ceramic that's lighter, stronger, and more scratch-resistant than ever before.</p>
+                
+                <div class="innovation-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>30% lighter than traditional ceramics</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Enhanced scratch resistance</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Hypoallergenic and comfortable</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Available in new color variants</span>
+                    </div>
+                </div>
+
+                <div class="cta-buttons" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="#" class="btn btn-primary">Explore Technology</a>
+                    <a href="#" class="btn btn-secondary">Watch Video</a>
+                </div>
+            </div>
+            <div class="innovation-image">
+                <img src="https://www.rado.com/media/catalog/product/h/y/hyperchrome_r32259323_sld_web_2.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center" alt="Innovative Ceramic Watch">
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="coming-soon">
+        <div class="section-header">
+            <h2 class="section-title">Coming Soon</h2>
+            <p class="section-subtitle">Get ready for these exciting new releases</p>
+        </div>
+        <div class="coming-grid">
+            <div class="coming-card">
+                <div class="coming-icon">
+                    <i class="fas fa-compass"></i>
+                </div>
+                <h3>Explorer Pro Series</h3>
+                <p>Professional-grade watches designed for extreme conditions and adventure.</p>
+                <div class="release-date">Launch: December 2023</div>
+                <a href="#" class="btn btn-secondary" style="padding: 0.8rem 1.5rem;">Notify Me</a>
+            </div>
+            <div class="coming-card">
+                <div class="coming-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <h3>Lunar Edition</h3>
+                <p>Celestial-inspired timepieces with moonphase complications and starry dials.</p>
+                <div class="release-date">Launch: January 2024</div>
+                <a href="#" class="btn btn-secondary" style="padding: 0.8rem 1.5rem;">Notify Me</a>
+            </div>
+            <div class="coming-card">
+                <div class="coming-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <h3>Eternal Collection</h3>
+                <p>Sustainable luxury watches crafted from recycled materials and ethical sources.</p>
+                <div class="release-date">Launch: February 2024</div>
+                <a href="#" class="btn btn-secondary" style="padding: 0.8rem 1.5rem;">Notify Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="newsletter-content">
+            <h2>Stay Updated</h2>
+            <p>Be the first to know about new releases, exclusive offers, and special events.</p>
+            <div class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email">
+                <button class="btn btn-primary">Subscribe</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Timecraze</h3>
+                <a href="#">Our Heritage</a>
+                <a href="#">Craftsmanship</a>
+                <a href="#">Sustainability</a>
+                <a href="#">Careers</a>
+            </div>
+            <div class="footer-column">
+                <h3>Collections</h3>
+                <a href="#">New Arrivals</a>
+                <a href="#">Classic Series</a>
+                <a href="#">Sports Edition</a>
+                <a href="#">Limited Editions</a>
+            </div>
+            <div class="footer-column">
+                <h3>Services</h3>
+                <a href="#">After-Sales Service</a>
+                <a href="#">Warranty Information</a>
+                <a href="#">Watch Care</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <a href="#">Store Locator</a>
+                <a href="#">Customer Service</a>
+                <a href="#">Corporate Gifting</a>
+                <a href="#">+1 (888) 827-3932</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Timecraze. All rights reserved. Crafted for those who appreciate precision and style.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Show Admin link only for admin session user
+        fetch("{{ url_for('auth.api_me') }}", {credentials: 'same-origin'})
+          .then(r => r.ok ? r.json() : null)
+          .then(d => {
+              if(d && d.user && d.user.isAdmin){
+                  var a = document.getElementById('adminLink');
+                  if(a) a.style.display = 'inline-block';
+              }
+          })
+          .catch(()=>{});
+
+        // New arrivals data
+        const newArrivals = [
+            { 
+                name: "Hyperchrome Ultra", 
+                price: "₹4,200", 
+                type: "Automatic Chronograph",
+                collection: "Sports",
+                description: "The next generation of sports chronograph with improved accuracy and enhanced durability.",
+                image: "https://www.rado.com/media/catalog/product/h/y/hyperchrome_r32259323_sld_web_2.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "In Stock"
+            },
+            { 
+                name: "Captain Cook Bronze Pro", 
+                price: "₹3,800", 
+                type: "Automatic Diver",
+                collection: "Diver",
+                description: "Professional diving watch with bronze case that develops unique patina over time.",
+                image: "https://www.rado.com/media/catalog/product/c/a/captaincook_r32148162_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "Limited Stock"
+            },
+            { 
+                name: "True Square Minimal", 
+                price: "₹3,300", 
+                type: "Automatic",
+                collection: "Modern",
+                description: "Square case design with minimalist dial and advanced ceramic construction.",
+                image: "https://www.rado.com/media/catalog/product/t/r/truesquare_r27073712_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "In Stock"
+            },
+            { 
+                name: "Florence Artisan", 
+                price: "₹4,500", 
+                type: "Automatic",
+                collection: "Classic",
+                description: "Handcrafted timepiece with guilloché dial and diamond-set bezel for formal occasions.",
+                image: "https://www.rado.com/media/catalog/product/f/l/florence_r48905205_sld_web_2.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "In Stock"
+            },
+            { 
+                name: "Anatom Slim", 
+                price: "₹2,900", 
+                type: "Quartz",
+                collection: "Classic",
+                description: "Ultra-slim profile with skeletonized hands and advanced quartz movement.",
+                image: "https://www.rado.com/media/catalog/product/a/n/anatom_r10204712_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "In Stock"
+            },
+            { 
+                name: "Captain Cook Green Edition", 
+                price: "₹3,600", 
+                type: "Automatic Diver",
+                collection: "Diver",
+                description: "Special green dial edition with enhanced luminosity and 300m water resistance.",
+                image: "https://www.rado.com/media/catalog/product/c/a/captaincook_r32223203_sld_web_1.png?im=AspectCrop=(1300,1300),allowExpansion,location=(0.5,0.5);Resize=(1300,1300),aspect=fill;Crop=(0,0,1300,1300),gravity=Center",
+                availability: "Pre-order"
+            }
+        ];
+
+        // Generate new arrival cards
+        function generateNewArrivals() {
+            const grid = document.getElementById('arrivalsGrid');
+            
+            newArrivals.forEach((watch, index) => {
+                const card = document.createElement('div');
+                card.className = 'arrival-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <div class="new-badge">NEW</div>
+                    <div class="arrival-image">
+                        <img src="${watch.image}" alt="${watch.name}" loading="lazy">
+                    </div>
+                    <div class="arrival-content">
+                        <h3>${watch.name}</h3>
+                        <div class="arrival-meta">
+                            <span class="arrival-type">${watch.type}</span>
+                            <span class="arrival-collection">${watch.collection}</span>
+                        </div>
+                        <p class="arrival-description">${watch.description}</p>
+                        <div class="price-section">
+                            <div class="price">${watch.price}</div>
+                            <div class="availability">${watch.availability}</div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <a href="#" class="btn btn-primary add-to-cart-btn">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                `;
+                // Add to Cart button logic
+                card.querySelector('.add-to-cart-btn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    addToCart(watch);
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    // Filter logic would go here
+                });
+            });
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+        });
+
+        // Scroll animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.arrival-card, .coming-card');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Initialize
+        // Cart logic
+        function addToCart(watch) {
+            // Parse price as number (remove ₹ and commas)
+            let price = parseFloat(watch.price.replace(/[^\d.]/g, ''));
+            let cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+            // Use name as unique id for cart
+            let existing = cart.find(item => item.name === watch.name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: watch.name, // use name as id
+                    name: watch.name,
+                    type: watch.type,
+                    price: price,
+                    quantity: 1,
+                    image: watch.image
+                });
+            }
+            localStorage.setItem('cartItems', JSON.stringify(cart));
+            window.location.href = 'cart.html';
+        }
+
+        window.addEventListener('load', function() {
+            generateNewArrivals();
+            setupFilters();
+            animateOnScroll();
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>

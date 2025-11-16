@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Timecraze</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Use styles similar to your previous product page for consistency */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo span { color: #d4af37; }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #e0e0e0;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #d4af37;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-actions { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-actions i { font-size: 1.1rem; cursor: pointer; color: #e0e0e0; }
+        .nav-actions i:hover { color: #d4af37; }
+        .product-page {
+            padding-top: 100px;
+            min-height: 100vh;
+            background: #121212;
+        }
+        .product-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+        @media (max-width: 768px) {
+            .product-container { grid-template-columns: 1fr; gap: 2rem; }
+        }
+        .product-gallery {
+            /* acts as grid item container; visual box moved to .gallery-card */
+        }
+        .gallery-card {
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background: #1e1e1e;
+            padding: 2rem;
+        }
+        .main-image {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #222;
+        }
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumbs {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .thumb {
+            background: #191919;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform .2s ease, border-color .2s ease;
+        }
+        .thumb img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .thumb:hover { transform: translateY(-2px); border-color: #d4af37; }
+        .thumb.active { border-color: #d4af37; box-shadow: 0 0 0 2px rgba(212,175,55,.15) inset; }
+        .key-highlights { margin-top:1.5rem; padding:0.75rem 0.5rem 0.25rem; border-top:1px solid #2a2a2a; }
+        .key-highlights h4 { font-size:0.9rem; text-transform:uppercase; letter-spacing:0.06em; color:#a0a0a0; margin-bottom:0.4rem; }
+        .key-highlights ul { list-style:none; padding:0; margin:0; font-size:0.85rem; color:#d0d0d0; }
+        .key-highlights li { margin-bottom:0.25rem; position:relative; padding-left:1rem; }
+        .key-highlights li::before { content:'•'; position:absolute; left:0; color:#d4af37; }
+        .product-info {
+            padding: 1rem 0;
+        }
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #d4af37;
+            margin-bottom: 2rem;
+        }
+        .product-description {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .qty-row { display: flex; align-items: center; gap: 1rem; margin: 1.2rem 0 2rem; }
+        .qty-controls { display: inline-flex; align-items: center; gap: .75rem; background:#1a1a1a; padding:.5rem; border-radius: 999px; }
+        .qty-btn { width:34px; height:34px; border:none; border-radius:50%; background:#d4af37; color:#121212; font-weight:700; cursor:pointer; }
+        .qty-btn:hover { background:#b8941f; }
+        .qty-num { min-width: 28px; text-align:center; font-weight:700; }
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #d4af37;
+            color: #121212;
+        }
+        .btn-primary:hover {
+            background: #b8941f;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+        .btn-secondary:hover {
+            background: #fff;
+            color: #121212;
+        }
+        .specs { border-top:1px solid #333; margin-top:2rem; padding-top:1.5rem; }
+        .specs h3 { color:#fff; font-weight:500; margin-bottom:1rem; }
+        .spec-grid { display:grid; grid-template-columns: 1fr 1fr; gap: .75rem 1.5rem; }
+        .spec-label { color:#a0a0a0; }
+        .spec-value { color:#e0e0e0; }
+        @media (max-width:768px){ .spec-grid{ grid-template-columns:1fr; } }
+
+        .accordion { margin-top:2rem; border-top:1px solid #333; }
+        .acc-item { border-bottom:1px solid #333; }
+        .acc-head { display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; }
+        .acc-head h4 { margin:0; color:#fff; font-weight:500; }
+        .acc-body { display:none; color:#a0a0a0; padding: 0 0 1rem; }
+        .acc-item.open .acc-body { display:block; }
+
+        .reviews { padding: 2rem; background:#1a1a1a; border-radius:16px; margin: 2rem 0; }
+        .reviews h3 { margin-bottom:1rem; font-weight:500; color:#fff; }
+        .review-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:1rem; }
+        .review-card { background:#1e1e1e; border:1px solid #2a2a2a; border-radius:12px; padding:1rem 1.2rem; }
+        .review-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem; }
+        .review-name { font-weight:600; color:#fff; font-size:.95rem; }
+        .review-date { font-size:.75rem; color:#777; }
+        .review-stars { color:#f1c40f; font-size:.85rem; margin-bottom:.4rem; }
+        .review-text { font-size:.85rem; color:#c0c0c0; line-height:1.6; }
+
+        .related { padding: 2rem; background:#1a1a1a; border-radius:16px; margin: 2rem 0; }
+        .related h3 { margin-bottom:1rem; font-weight:500; color:#fff; }
+        .rel-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:1rem; }
+        .rel-card { background:#1e1e1e; border:1px solid #2a2a2a; border-radius:12px; padding:1rem; text-align:center; }
+        .rel-card img { height:140px; object-fit:contain; width:100%; }
+        .rel-title { margin:.5rem 0; color:#e0e0e0; font-size:.95rem; }
+        .rel-price { color:#d4af37; font-weight:700; margin-bottom:.5rem; }
+        .rel-link { display:inline-block; font-size:.85rem; color:#fff; border:1px solid #fff; padding:.4rem .9rem; border-radius:999px; text-decoration:none; }
+        .rel-link:hover { background:#fff; color:#121212; }
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 4rem 10% 2rem;
+            border-top: 1px solid #333;
+            text-align: center;
+        }
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+            color: #a0a0a0;
+        }
+    </style>
+    </head>
+<body>
+    <nav id="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
+            <i class="fas fa-crown"></i>
+            Time<span>craze</span>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('products.shop') }}">Collections</a>
+            <a href="{{ url_for('new_arrivals') }}">New Arrivals</a>
+            <a href="{{ url_for('limited_edition') }}">Limited Edition</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('legacy_boutiques') }}">Boutiques</a>
+            <a href="{{ url_for('legacy_contact') }}">Contact</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('orders.view_orders') }}">My Orders</a>
+            {% endif %}
+            <a href="{{ url_for('cart.view_cart') }}"><i class="fas fa-shopping-bag"></i> Cart</a>
+        </div>
+        <div class="nav-actions">
+            <i class="fas fa-search"></i>
+        </div>
+    </nav>
+    <section class="product-page">
+        <div class="product-container">
+            <div class="product-gallery">
+                <div class="gallery-card">
+                    <div class="main-image">
+                        <img id="mainProductImage" src="{{ product.image or 'https://via.placeholder.com/600x600?text=Timecraze' }}" alt="{{ product.name or product.model_name }}">
+                    </div>
+                    <div class="thumbs" id="thumbContainer"></div>
+                    <div class="key-highlights">
+                        <h4>Key Highlights</h4>
+                        <ul>
+                            <li>24 months movement warranty</li>
+                            <li>Genuine leather strap</li>
+                            <li>Scratch-resistant sapphire crystal</li>
+                            <li>Water resistant up to 100m</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="product-info">
+                <h1 class="product-title" id="productTitle">{{ product.name or product.model_name }}</h1>
+                <div class="product-price">
+                    <div id="productPriceMain">MRP ₹{{ '%.2f'|format(product.price) if product.price is not none else '0.00' }}</div>
+                    <div class="product-tax-note" style="font-size:0.9rem;color:#a0a0a0;margin-top:0.3rem;">Inclusive of all taxes*</div>
+                </div>
+                <div class="product-description" id="productDesc">{{ product.description or 'Premium craftsmanship, sapphire crystal, and precision movement.' }}</div>
+                <div class="qty-row">
+                    <div class="qty-controls">
+                        <button type="button" class="qty-btn" id="qtyMinus">−</button>
+                        <span class="qty-num" id="qtyNum">1</span>
+                        <button type="button" class="qty-btn" id="qtyPlus">+</button>
+                    </div>
+                    <button class="btn btn-primary" id="addToCartBtn"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+
+                <div class="specs" id="specs">
+                    <h3>Specifications</h3>
+                    <div class="spec-grid">
+                        <div class="spec-label">Movement</div><div class="spec-value" id="specMovement">Automatic</div>
+                        <div class="spec-label">Case</div><div class="spec-value" id="specCase">Stainless Steel</div>
+                        <div class="spec-label">Crystal</div><div class="spec-value" id="specCrystal">Sapphire</div>
+                        <div class="spec-label">Water Resistance</div><div class="spec-value" id="specWR">100m</div>
+                        <div class="spec-label">Strap</div><div class="spec-value" id="specStrap">Leather</div>
+                        <div class="spec-label">Warranty</div><div class="spec-value" id="specWarranty">5 Years</div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="acc-item" id="accShipping">
+                        <div class="acc-head"><h4>Shipping & Delivery</h4><i class="fas fa-chevron-down"></i></div>
+                        <div class="acc-body">Free standard shipping across India. Orders ship within 24–48 hours. Delivery in 3–7 business days.</div>
+                    </div>
+                    <div class="acc-item" id="accReturns">
+                        <div class="acc-head"><h4>Returns & Exchanges</h4><i class="fas fa-chevron-down"></i></div>
+                        <div class="acc-body">30-day hassle-free returns. Items must be unworn and in original packaging. Easy doorstep pickup available.</div>
+                    </div>
+                    <div class="acc-item" id="accWarranty">
+                        <div class="acc-head"><h4>Warranty</h4><i class="fas fa-chevron-down"></i></div>
+                        <div class="acc-body">Comprehensive 5-year international warranty covering manufacturing defects. Authorized service centers across India.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews">
+            <h3>Customer Reviews</h3>
+            <div class="review-list">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-name">Arjun Mehta</div>
+                        <div class="review-date">2 days ago</div>
+                    </div>
+                    <div class="review-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="review-text">
+                        "Build quality bahut premium hai, strap bhi kaafi comfortable lagta hai.
+                        Daily office wear ke liye perfect watch."
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-name">Simran Kaur</div>
+                        <div class="review-date">1 week ago</div>
+                    </div>
+                    <div class="review-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="review-text">
+                        "Packaging aur presentation bohot classy thi. Watch ki dial finishing
+                        real me photos se bhi zyada acchi lagti hai."
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-name">Rahul Verma</div>
+                        <div class="review-date">3 weeks ago</div>
+                    </div>
+                    <div class="review-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                    <div class="review-text">
+                        "Timekeeping accurate hai, aur night visibility bhi sahi hai.
+                        Strap thoda stiff tha pehle 2–3 din, uske baad set ho gaya."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="related">
+            <h3>Related Products</h3>
+            <div class="rel-grid" id="relatedGrid"></div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Timecraze. All rights reserved. Crafted for those who appreciate precision and style.</p>
+        </div>
+    </footer>
+    <script>
+    // Build product object from already-rendered DOM (values come from backend `product`)
+    function getProductFromDom() {
+        const mainPriceEl = document.getElementById('productPriceMain');
+        return {
+            name: document.getElementById('productTitle').textContent || 'Timecraze Watch',
+            price: mainPriceEl ? mainPriceEl.textContent : '₹0',
+            image: document.getElementById('mainProductImage').src || 'https://via.placeholder.com/600x600?text=Timecraze',
+            desc: document.getElementById('productDesc').textContent || 'Premium craftsmanship, sapphire crystal, and precision movement.'
+        };
+    }
+
+    const USD_TO_INR = 83; // keep consistent with index.html
+    function parsePriceToNumber(priceStr) {
+        const s = (priceStr || '').toString();
+        const num = Number(s.replace(/[^\d.]/g, '')) || 0;
+        if (s.includes('$')) {
+            return Math.round(num * USD_TO_INR);
+        }
+        return num;
+    }
+
+    function addCurrentProductToCart(p, qty) {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        const idx = cartItems.findIndex(it => it.id === p.id || it.name === p.name);
+        const numericPrice = parsePriceToNumber(p.price);
+        if (idx !== -1) {
+            const it = cartItems[idx];
+            cartItems[idx] = { ...it, quantity: Math.max(1, Number(it.quantity) || 1) + Math.max(1, Number(qty) || 1) };
+        } else {
+            cartItems.push({ id: p.id, name: p.name, type: 'Product', price: numericPrice, quantity: Math.max(1, Number(qty) || 1), image: p.image });
+        }
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+
+    function showToast(message) {
+        const div = document.createElement('div');
+        div.textContent = message;
+        div.style.cssText = 'position:fixed;top:100px;right:20px;background:#27ae60;color:#fff;padding:12px 18px;border-radius:10px;z-index:10000;box-shadow:0 5px 15px rgba(0,0,0,.3);opacity:0;transform:translateX(20px);transition:all .3s';
+        document.body.appendChild(div);
+        requestAnimationFrame(() => { div.style.opacity = '1'; div.style.transform = 'translateX(0)'; });
+        setTimeout(() => { div.style.opacity = '0'; div.style.transform = 'translateX(20px)'; setTimeout(() => div.remove(), 300); }, 1500);
+    }
+
+    const product = getProductFromDom();
+    // Normalize display to INR using whatever is in DOM
+    const numericINR = parsePriceToNumber(product.price);
+    const displayINR = `MRP ₹${numericINR.toLocaleString('en-IN')}`;
+    var mainPriceEl = document.getElementById('productPriceMain');
+    if(mainPriceEl){
+        mainPriceEl.textContent = displayINR;
+    }
+
+    // Thumbnails from up to 5 product image URLs coming from backend
+    const thumbSources = [
+        {{ (product.image|tojson)|safe }},
+        {{ (product.image2|default('', true)|tojson)|safe }},
+        {{ (product.image3|default('', true)|tojson)|safe }},
+        {{ (product.image4|default('', true)|tojson)|safe }},
+        {{ (product.image5|default('', true)|tojson)|safe }}
+    ].filter(src => src && src.trim() !== '');
+
+    const thumbs = thumbSources.length ? thumbSources : [product.image];
+    const thumbContainer = document.getElementById('thumbContainer');
+    thumbs.forEach((src, i) => {
+        const d = document.createElement('div'); d.className = 'thumb' + (i===0?' active':'');
+        d.innerHTML = `<img src="${src}" alt="thumb">`;
+        d.addEventListener('click', () => {
+            document.getElementById('mainProductImage').src = src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            d.classList.add('active');
+        });
+        thumbContainer.appendChild(d);
+    });
+
+    // Qty controls
+    const qtyNum = document.getElementById('qtyNum');
+    document.getElementById('qtyPlus').addEventListener('click', () => {
+        qtyNum.textContent = String(Math.min(10, Number(qtyNum.textContent) + 1));
+    });
+    document.getElementById('qtyMinus').addEventListener('click', () => {
+        qtyNum.textContent = String(Math.max(1, Number(qtyNum.textContent) - 1));
+    });
+
+    // Accordion
+    document.querySelectorAll('.acc-item .acc-head').forEach(head => {
+        head.addEventListener('click', () => {
+            head.parentElement.classList.toggle('open');
+        });
+    });
+
+    // Related products (static suggestions)
+    const related = [
+        { name:'Captain Cook Blue', price:'₹2,85,000', image:'https://www.rado.com/media/catalog/product/c/a/captaincook_r32222108_sld_web_1.png' },
+        { name:'True Square Black', price:'₹2,48,000', image:'https://www.rado.com/media/catalog/product/t/r/truesquare_r27073712_sld_web_1.png' },
+        { name:'Florence Diamond', price:'₹3,45,000', image:'https://www.rado.com/media/catalog/product/f/l/florence_r48905205_sld_web_2.png' }
+    ];
+    const relGrid = document.getElementById('relatedGrid');
+    related.forEach(r => {
+        const card = document.createElement('div'); card.className='rel-card';
+        card.innerHTML = `
+            <img src="${r.image}" alt="${r.name}">
+            <div class="rel-title">${r.name}</div>
+            <div class="rel-price">${r.price}</div>
+            <a class="rel-link" href="product.html?${new URLSearchParams({name:r.name, price:r.price, image:r.image, desc:'High-precision movement with premium finish'}).toString()}">View</a>
+        `;
+        relGrid.appendChild(card);
+    });
+
+    document.getElementById('addToCartBtn').addEventListener('click', function () {
+        const qty = Number(qtyNum.textContent) || 1;
+        // Ensure product carries INR string so downstream always parses INR
+        const prodWithInr = { ...product, price: displayINR };
+        addCurrentProductToCart(prodWithInr, qty);
+        showToast('Added to cart');
+        // Redirect to Flask cart route so URL is /cart, not /product/cart.html
+        setTimeout(() => { window.location.href = "{{ url_for('cart.view_cart') }}"; }, 600);
+    });
+    </script>
+</body>
+</html>

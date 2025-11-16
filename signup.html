@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif}
+    :root{--primary:#0f0f0f;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#fff;--text-light:#a0a0a0;--border:#333}
+    body{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .background{position:absolute;inset:0;z-index:-1}
+    .floating-shape{position:absolute;border:1px solid rgba(212,175,55,.1);border-radius:50%;animation:float 8s ease-in-out infinite}
+    .floating-shape:nth-child(1){width:200px;height:200px;top:10%;left:10%}
+    .floating-shape:nth-child(2){width:150px;height:150px;bottom:20%;right:10%;animation-delay:2s}
+    .floating-shape:nth-child(3){width:100px;height:100px;top:50%;left:80%;animation-delay:4s}
+    .signup-container{background:rgba(26,26,26,.93);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;width:100%;min-width:800px;max-width:1000px;box-shadow:0 20px 40px rgba(0,0,0,.3);opacity:0;transform:translateY(30px);animation:slideUp .8s ease .3s forwards;display:flex}
+    .signup-left{flex:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1.5px solid var(--border);padding:2.5rem}
+    .signup-right{flex:1.4;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem}
+    .logo{text-align:center;margin-bottom:2.5rem;opacity:0;animation:fadeIn .8s ease .6s forwards}
+    .logo i{font-size:2.5rem;color:var(--accent);margin-bottom:1rem;display:block}
+    .logo h1{font-size:2rem;font-weight:600;color:var(--text)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;opacity:0;transform:translateX(-20px);animation:slideIn .6s ease forwards}
+    .form-group{margin-bottom:1.5rem;opacity:0;transform:translateX(-20px);animation:slideIn .6s ease forwards}
+    .input-group{position:relative}
+    .form-input{width:100%;padding:1rem 1rem 1rem 3rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:1rem;transition:all .3s ease;outline:none}
+    .form-input:focus{border-color:var(--accent);background:rgba(255,255,255,.08)}
+    .input-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-light)}
+    .form-input:focus+.input-icon{color:var(--accent)}
+    .password-toggle{position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-light);cursor:pointer}
+    .terms{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:2rem}
+    .terms-checkbox{width:16px;height:16px;border:1px solid var(--border);border-radius:3px;position:relative;margin-top:.2rem}
+    .terms-checkbox.checked{background:var(--accent);border-color:var(--accent)}
+    .terms-checkbox.checked::after{content:'\2713';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--primary);font-size:10px;font-weight:bold}
+    .terms-text{color:var(--text-light);font-size:.9rem;line-height:1.4}
+    .submit-btn{width:100%;padding:1rem;background:var(--accent);border:none;border-radius:10px;color:var(--primary);font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s ease}
+    .submit-btn:hover{background:var(--accent-dark);transform:translateY(-2px)}
+    @keyframes slideUp{to{opacity:1;transform:translateY(0)}}@keyframes slideIn{to{opacity:1;transform:translateX(0)}}@keyframes fadeIn{to{opacity:1}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    @media(max-width:1000px){.signup-container{min-width:0;max-width:98vw}.signup-left,.signup-right{padding:1.5rem}}
+    @media(max-width:768px){.signup-container{flex-direction:column}.signup-left{border-right:none;border-bottom:1.5px solid var(--border)}.form-row{grid-template-columns:1fr}}
+    @media(max-width:480px){.signup-container{margin:1rem;max-width:99vw}}
+  </style>
+</head>
+<body> <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <!-- Signup Container -->
+    <div class="signup-container horizontal-layout">
+        <div class="signup-left">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h1>Timecraze</h1>
+            </div>
+            <div class="signup-intro">
+                <p style="color: var(--text-light); font-size: 1.1rem; margin-top: 1.5rem; text-align: center;">
+                    Join the Elite<br>
+                    Create your account and discover premium timepieces.
+                </p>
+            </div>
+        </div>
+
+        <div class="signup-right">
+            <!-- Signup Form -->
+            <form action="{{ url_for('auth.signup') }}" method="POST" id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-input" name="first_name" placeholder="First Name" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-input" name="last_name" placeholder="Last Name" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="email" class="form-input" name="email" placeholder="Email Address" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="password" class="form-input" name="password" placeholder="Password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="password" class="form-input" name="confirm_password" placeholder="Confirm Password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="termsCheckbox" required>
+                    <label for="termsCheckbox" class="terms-text">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="login-link" style="text-align:center; margin-top:1rem;">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password toggle
+        document.querySelectorAll('.password-toggle').forEach((btn, i) => {
+          btn.addEventListener('click', () => {
+            const inputs = document.querySelectorAll('input[type="password"]');
+            const input = inputs[i];
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            btn.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+          });
+        });
+     </script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Timecraze</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#fff;--border:#333}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat','Segoe UI',sans-serif}
+    body{background:var(--primary);color:var(--text)}
+    nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.2rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.8rem;font-weight:700;color:var(--white);display:flex;gap:.5rem;align-items:center}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem}
+    .nav-links a{color:var(--text);text-decoration:none;position:relative}
+    .nav-links a::after{content:"";position:absolute;left:0;bottom:-8px;height:2px;width:0;background:var(--accent);transition:width .3s}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%}
+    .hero{min-height:40vh;padding:120px 10% 40px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;text-align:center}
+    .hero h1{font-size:2.6rem;font-weight:300;color:var(--white);margin-bottom:.6rem}
+    .hero p{color:var(--text-light)}
+    .section{padding:70px 8%;display:grid;grid-template-columns:1.2fr .8fr;gap:2rem}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.5rem}
+    label{display:block;color:var(--text-light);margin:.6rem 0 .3rem}
+    input,textarea{width:100%;padding:1rem;border-radius:10px;border:1px solid var(--border);background:#181818;color:var(--text)}
+    textarea{min-height:140px;resize:vertical}
+    .btn{display:inline-block;margin-top:1rem;background:var(--accent);color:var(--primary);padding:.9rem 1.6rem;border-radius:999px;text-decoration:none;font-weight:600}
+    .btn:hover{background:var(--accent-dark)}
+    .info{color:var(--text-light)}
+    .row{display:flex;gap:1rem;margin:.5rem 0}
+    .row i{color:var(--accent)}
+    footer{background:var(--secondary);border-top:1px solid var(--border);padding:3rem 8%;color:var(--text-light);text-align:center}
+    @media(max-width:900px){.section{grid-template-columns:1fr}}
+    @media(max-width:768px){.hero h1{font-size:2rem}.nav-links{display:none}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('home') }}" class="logo"><i class="fas fa-crown"></i>Time<span>craze</span></a>
+    <div class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('products.shop') }}">Collections</a>
+      <a href="{{ url_for('new_arrivals') }}">New Arrivals</a>
+      <a href="{{ url_for('limited_edition') }}">Limited Edition</a>
+      <a href="{{ url_for('legacy_boutiques') }}">Boutiques</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('legacy_contact') }}" class="active">Contact</a>
+      <a href="{{ url_for('cart.view_cart') }}"><i class="fas fa-shopping-bag"></i> Cart</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1>Contact Us</h1>
+      <p>We’re here to help. Send us a message and we’ll get back within 24 hours.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <form class="card" onsubmit="event.preventDefault(); alert('Message sent!'); this.reset();">
+      <div class="row">
+        <div style="flex:1">
+          <label for="name">Full Name</label>
+          <input id="name" required placeholder="Your name" />
+        </div>
+        <div style="flex:1">
+          <label for="email">Email</label>
+          <input id="email" type="email" required placeholder="name@example.com" />
+        </div>
+      </div>
+      <label for="subject">Subject</label>
+      <input id="subject" required placeholder="How can we help?" />
+      <label for="message">Message</label>
+      <textarea id="message" required placeholder="Your message"></textarea>
+      <button class="btn" type="submit">Send Message</button>
+    </form>
+
+    <div class="card info">
+      <h3 style="color:var(--white);margin-bottom:.6rem">Customer Care</h3>
+      <div class="row"><i class="fas fa-envelope"></i> support@timecraze.com</div>
+      <div class="row"><i class="fas fa-phone"></i> +1 (888) 827-3932</div>
+      <div class="row"><i class="fas fa-location-dot"></i> 5th Ave, New York, NY</div>
+      <hr style="border-color:var(--border);margin:1rem 0">
+      <p>Mon–Fri: 9:00–18:00 • Sat: 10:00–16:00</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Timecraze. We respect your privacy and reply promptly.</p>
+  </footer>
+</body>
+</html>

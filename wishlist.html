@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist - Timecraze</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+        :root{--primary:#121212;--secondary:#1a1a1a;--accent:#d4af37;--accent-dark:#b8941f;--text:#e0e0e0;--text-light:#a0a0a0;--card-bg:#1e1e1e;--white:#ffffff;--border:#333333}
+        body{background-color:var(--primary);color:var(--text);line-height:1.6;overflow-x:hidden}
+        nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(20px);padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border)}
+        .logo{font-size:1.6rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:.5rem}
+        .logo span{color:var(--accent)}
+        .nav-links{display:flex;gap:2rem;align-items:center}
+        .nav-links a{text-decoration:none;color:var(--text);font-weight:500;font-size:.95rem;position:relative}
+        .nav-links a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:2px;background:var(--accent);transition:width .3s ease}
+        .nav-links a:hover::after{width:100%}
+        .nav-actions{display:flex;align-items:center;gap:1.2rem}
+        .nav-actions a{color:var(--text);text-decoration:none}
+        .page-header{padding:120px 8% 20px;background:var(--primary);border-bottom:1px solid var(--border)}
+        .page-header h1{font-size:2.2rem;font-weight:500;color:var(--white);margin-bottom:.3rem}
+        .page-header p{font-size:.95rem;color:var(--text-light)}
+        .wishlist-section{padding:30px 6% 60px}
+        .wishlist-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;max-width:1200px;margin:0 auto}
+        @media(max-width:1200px){.wishlist-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:768px){.wishlist-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:480px){.wishlist-grid{grid-template-columns:1fr}}
+        .wish-card{background:var(--card-bg);border-radius:15px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);border:1px solid var(--border);display:flex;flex-direction:column}
+        .wish-image{height:200px;background:linear-gradient(135deg,#2a2a2a,#1a1a1a);display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .wish-image img{width:100%;height:100%;object-fit:cover}
+        .wish-content{padding:.9rem;flex:1}
+        .wish-title{font-size:.98rem;margin-bottom:.3rem;color:var(--white)}
+        .wish-price{font-size:.96rem;font-weight:700;color:var(--accent);margin-bottom:.4rem}
+        .wish-actions{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.3rem}
+        .btn{display:inline-block;padding:.55rem 1.3rem;border-radius:999px;border:none;text-decoration:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s ease;text-align:center}
+        .btn-primary{background:var(--accent);color:var(--primary)}
+        .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 10px 24px rgba(212,175,55,.35)}
+        .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+        .btn-outline:hover{background:#222}
+        .empty-state{text-align:center;color:var(--text-light);margin-top:40px;font-size:.95rem}
+        .heart{color:#e74c3c;font-size:1.1rem}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}" class="logo">Time<span>craze</span></a>
+        <div style="display:flex;align-items:center;gap:2.5rem;">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('products.shop') }}">Collections</a>
+                <a href="{{ url_for('new_arrivals') }}">New Arrivals</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('cart.view_cart') }}" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>Your Wishlist</h1>
+        <p>All the watches you've marked to revisit later.</p>
+    </section>
+
+    <section class="wishlist-section">
+        <div id="wishlistContainer" class="wishlist-grid"></div>
+        <div id="wishlistEmpty" class="empty-state" style="display:none;">Your wishlist is empty. Start adding your favourite watches!</div>
+    </section>
+
+    <script>
+    function loadWishlist(){
+        const container=document.getElementById('wishlistContainer');
+        const empty=document.getElementById('wishlistEmpty');
+        const items=JSON.parse(localStorage.getItem('wishlistItems')||'[]');
+        container.innerHTML='';
+        if(!items.length){
+            empty.style.display='block';
+            return;
+        }
+        empty.style.display='none';
+        items.forEach(item=>{
+            const card=document.createElement('div');
+            card.className='wish-card';
+            card.innerHTML=`
+                <div class="wish-image"><img src="${item.image}" alt="${item.name}"></div>
+                <div class="wish-content">
+                    <div class="wish-title">${item.name}</div>
+                    <div class="wish-price">MRP ₹${(item.price||0).toLocaleString('en-IN')}</div>
+                    <div class="wish-actions">
+                        <button class="btn btn-primary" data-id="${item.id}">Add to Cart</button>
+                        <button class="btn btn-outline" data-remove="${item.id}"><i class="fas fa-heart-broken heart"></i> Remove</button>
+                    </div>
+                </div>`;
+            container.appendChild(card);
+        });
+
+        container.addEventListener('click',function(e){
+            const addBtn=e.target.closest('button.btn-primary');
+            const remBtn=e.target.closest('button[data-remove]');
+            if(addBtn){
+                const id=addBtn.getAttribute('data-id');
+                const items=JSON.parse(localStorage.getItem('wishlistItems')||'[]');
+                const p=items.find(x=>x.id===id);
+                if(p){
+                    const cartItems=JSON.parse(localStorage.getItem('cartItems')||'[]');
+                    const idx=cartItems.findIndex(it=>it.id===p.id);
+                    if(idx!==-1){
+                        cartItems[idx].quantity=(cartItems[idx].quantity||1)+1;
+                    }else{
+                        cartItems.push({id:p.id,name:p.name,type:'Product',price:p.price||0,quantity:1,image:p.image});
+                    }
+                    localStorage.setItem('cartItems',JSON.stringify(cartItems));
+                    alert('Added to cart');
+                }
+            }
+            if(remBtn){
+                const id=remBtn.getAttribute('data-remove');
+                let items=JSON.parse(localStorage.getItem('wishlistItems')||'[]');
+                items=items.filter(x=>x.id!==id);
+                localStorage.setItem('wishlistItems',JSON.stringify(items));
+                loadWishlist();
+            }
+        },{once:true});
+    }
+    window.addEventListener('load',loadWishlist);
+    </script>
+</body>
+</html>
